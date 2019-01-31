@@ -136,7 +136,8 @@ class Messaging {
     ecies,
     messagingNamespace,
     globalKeyServer,
-    personalSign = true
+    personalSign = true,
+    walletLinker
   }) {
     this.contractService = contractService
     this.web3 = this.contractService.web3
@@ -162,11 +163,12 @@ class Messaging {
     //default to cookieStorage
     this.currentStorage = this.cookieStorage
 
+    this.walletLinker = walletLinker
     this.registerWalletLinker()
   }
 
   registerWalletLinker() {
-    const walletLinker = this.contractService.walletLinker
+    const walletLinker = this.linker || this.contractService.walletLinker
     if (walletLinker) {
       walletLinker.registerCallback('messaging', this.onPreGenKeys.bind(this))
     }
