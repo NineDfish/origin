@@ -10,6 +10,7 @@ const client = new ApolloClient({ link, cache })
 
 if (typeof window !== 'undefined') {
   metaMaskSync(client)
+  console.log('calling messagingSync')
   messagingSync(client)
   window.gql = client
 }

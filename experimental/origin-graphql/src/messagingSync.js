@@ -20,6 +20,7 @@ const MessagingStateQuery = gql`
 let syncTimer
 
 export default function messagingSync(client) {
+  console.log('trying to sync')
   const msg = config.messaging
   if (!msg) {
     return
@@ -27,7 +28,8 @@ export default function messagingSync(client) {
   function refresh() {
     client
       .query({ query: MessagingStateQuery, fetchPolicy: 'network-only' })
-      .then(() => {})
+      .then(() => console.log('finished query'))
+      .catch(e => console.error('refresh error:', e))
   }
   msg.events.on('initRemote', () => {
     console.log('Messaging initialized')

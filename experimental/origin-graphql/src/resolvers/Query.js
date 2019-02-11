@@ -68,29 +68,42 @@ export default {
     }),
   messaging: (_, args) =>
     new Promise(async resolve => {
+      console.log('messaging init')
       if (
         typeof window !== 'undefined' &&
         window.localStorage.disableMessaging
       ) {
+        console.log('messaging disabled')
         return resolve(null)
       }
       let id = args.id
       if (id === 'defaultAccount') {
+        console.log('init defaultAccount')
         // web3Exec is either MetaMask or a web3 instance using the linker
         // client provider
         const accounts = contracts.web3Exec.eth.getAccounts()
-        if (!accounts || !accounts.length) return null
+        if (!accounts || !accounts.length) {
+          console.log('aborting because of no accounts')
+          return null
+        }
         id = accounts[0]
+        console.log('defaultaccount', id)
       } else if (id === 'currentAccount') {
+        console.log('init currentAccount')
         if (contracts.messaging.account_key) {
           id = contracts.messaging.account_key
         }
       }
+      console.log('before toChecksum')
       id = contracts.web3.utils.toChecksumAddress(id)
+      console.log('after toChecksum')
       if (activeMessaging === id) {
+        console.log('activeMessaging === id')
         return resolve({ id })
       }
+      console.log('before once')
       contracts.messaging.events.once('initRemote', async () => {
+        console.log('during once')
         activeMessaging = id
         setTimeout(() => resolve({ id }), 500)
       })
